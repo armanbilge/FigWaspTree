@@ -16,7 +16,7 @@ public interface TreeLayout {
         DISCRETE
     }
 
-    void layout(RootedTree tree, TreeLayoutCache ... caches);
+    void layout(RootedTree tree, TreeLayoutCache cache);
 
     /**
      * Add a listener for this layout
@@ -115,4 +115,7 @@ public interface TreeLayout {
     String getHilightAttributeName();
 
     void setHilightAttributeName(String hilightAttributeName);
+    
+    public void layoutDependent(RootedTree tree, TreeLayoutCache cache);
+    
 }

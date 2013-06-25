@@ -3,6 +3,7 @@ package figtree.treeviewer.treelayouts;
 import java.util.HashSet;
 import java.util.Set;
 
+import jebl.evolution.trees.RootedTree;
 import jebl.evolution.trees.Tree;
 
 /**
@@ -13,6 +14,12 @@ public abstract class AbstractTreeLayout implements TreeLayout {
 	private double rootLength = 0.0;
     private boolean isAxisReversed;
 
+    public AbstractTreeLayout() {
+    	addTreeLayoutListener(new TreeLayoutListener() {
+    		public void treeLayoutChanged() {dependentTreeLayout.fireTreeLayoutChanged();}
+    	});
+    }
+    
     public boolean isAxisReversed() {
         return isAxisReversed;
     }
@@ -88,7 +95,13 @@ public abstract class AbstractTreeLayout implements TreeLayout {
 		this.hilightAttributeName = hilightAttributeName;
 		fireTreeLayoutChanged();
 	}
+	
+	public void layoutDependent(RootedTree tree, TreeLayoutCache cache) {
+		dependentTreeLayout.layout(tree, cache);
+	}
 
+	protected final AbstractTreeLayout dependentTreeLayout = null;
+	
     private Set<TreeLayoutListener> listeners = new HashSet<TreeLayoutListener>();
     protected String branchColouringAttribute = null;
     protected String cartoonAttributeName = null;

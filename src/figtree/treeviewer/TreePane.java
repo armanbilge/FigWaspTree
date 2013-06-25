@@ -134,7 +134,6 @@ public class TreePane extends JComponent implements PainterListener, Printable {
     public void setTreeLayout(TreeLayout treeLayout) {
 
         this.treeLayout = treeLayout;
-        dependentTreeLayout = new RectilinearDependentTreeLayout((RectilinearTreeLayout) this.treeLayout);
 
         treeLayout.setCartoonAttributeName(CARTOON_ATTRIBUTE_NAME);
         treeLayout.setCollapsedAttributeName(COLLAPSE_ATTRIBUTE_NAME);
@@ -1501,8 +1500,7 @@ public class TreePane extends JComponent implements PainterListener, Printable {
         // First layout the tree
         treeLayout.layout(tree, treeLayoutCache);
         if (dependentTree != null) {
-        	dependentTreeLayout.layout(dependentTree, dependentTreeLayoutCache, treeLayoutCache);
-        	treeLayoutCache.combine(dependentTreeLayoutCache);
+        	treeLayout.layoutDependent(dependentTree, treeLayoutCache);
         }
 
         // Now rescale the scale axis
@@ -2030,8 +2028,6 @@ public class TreePane extends JComponent implements PainterListener, Printable {
     
     private RootedTree originalDependentTree = null;
     private RootedTree dependentTree = null;
-    private TreeLayout dependentTreeLayout = null;
-    private TreeLayoutCache dependentTreeLayoutCache = new TreeLayoutCache();  
 
     private boolean orderBranchesOn = false;
     private SortedRootedTree.BranchOrdering branchOrdering = SortedRootedTree.BranchOrdering.INCREASING_NODE_DENSITY;
