@@ -118,8 +118,9 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
         return (branchColouringAttribute != null && curvature == 0.0);
     }
 
-    public void layout(RootedTree tree, TreeLayoutCache cache) {
+    public void layout(RootedTree tree, TreeLayoutCache ...caches) {
 
+    	TreeLayoutCache cache = caches[0];
         cache.clear();
 
         maxXPosition = 0.0;
@@ -129,6 +130,11 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
         yIncrement = 1.0 / (tipCount - 1);
 
         Node root = tree.getRootNode();
+        Integer id = (Integer) root.getAttribute("nodeRef");
+        if (id != null) {
+        	cache.nodeIds.put(id, root);
+        	cache.symbiontCounts.put(root, 0);
+        }
         setRootLength(rootLengthProportion * tree.getHeight(root));
 
         maxXPosition = 0.0;
@@ -313,6 +319,12 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
 
         // add the node point to the map of node points
         cache.nodePoints.put(node, nodePoint);
+        
+        Integer id = (Integer) node.getAttribute("nodeRef");
+        if (id != null) {
+        	cache.nodeIds.put(id, node);
+        	cache.symbiontCounts.put(node, 0);
+        }
 
         return nodePoint;
     }

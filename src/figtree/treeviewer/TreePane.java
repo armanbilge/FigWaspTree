@@ -35,7 +35,7 @@ public class TreePane extends JComponent implements PainterListener, Printable {
     }
 
 
-    public final static boolean DEBUG_OUTLINE = true;
+    public final static boolean DEBUG_OUTLINE = false;
 
     public final String CARTOON_ATTRIBUTE_NAME = "!cartoon";
     public final String COLLAPSE_ATTRIBUTE_NAME = "!collapse";
@@ -62,6 +62,19 @@ public class TreePane extends JComponent implements PainterListener, Printable {
             repaint();
         }
     }
+    
+    public void setDependentTree(RootedTree tree) {
+        if (tree != null) {
+            this.originalDependentTree = tree;
+            setupDependentTree();
+        } else {
+            originalDependentTree = null;
+            this.dependentTree = null;
+            invalidate();
+            repaint();
+        }
+ 	
+    }
 
     private void setupTree() {
         tree = constructTransformedTree(originalTree);
@@ -71,6 +84,11 @@ public class TreePane extends JComponent implements PainterListener, Printable {
         calibrated = false;
         invalidate();
         repaint();
+    }
+    
+    private void setupDependentTree() {
+    	dependentTree = constructTransformedTree(originalDependentTree);
+    	calibrated = false;
     }
 
     public RootedTree constructTransformedTree(RootedTree sourceTree) {
@@ -116,6 +134,7 @@ public class TreePane extends JComponent implements PainterListener, Printable {
     public void setTreeLayout(TreeLayout treeLayout) {
 
         this.treeLayout = treeLayout;
+        dependentTreeLayout = new RectilinearDependentTreeLayout((RectilinearTreeLayout) this.treeLayout);
 
         treeLayout.setCartoonAttributeName(CARTOON_ATTRIBUTE_NAME);
         treeLayout.setCollapsedAttributeName(COLLAPSE_ATTRIBUTE_NAME);
@@ -1245,7 +1264,7 @@ public class TreePane extends JComponent implements PainterListener, Printable {
                     Paint background = new Color(0,0,0,0);
                     background = nodeBackgroundDecorator.getPaint(background);
                     g2.setPaint(background);
-                    g2.fill(transNodePath);
+//                    g2.fill(transNodePath);
 
 //                  Experimental outlining - requires order of drawing to be pre-order 
 //                    g2.setStroke(new BasicStroke(8, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
@@ -1481,6 +1500,10 @@ public class TreePane extends JComponent implements PainterListener, Printable {
 
         // First layout the tree
         treeLayout.layout(tree, treeLayoutCache);
+        if (dependentTree != null) {
+        	dependentTreeLayout.layout(dependentTree, dependentTreeLayoutCache, treeLayoutCache);
+        	treeLayoutCache.combine(dependentTreeLayoutCache);
+        }
 
         // Now rescale the scale axis
         setupScaleAxis();
@@ -1512,7 +1535,6 @@ public class TreePane extends JComponent implements PainterListener, Printable {
             final Rectangle2D calloutBounds = calloutPath.getBounds2D();
             treeBounds.add(calloutBounds);
         }
-
 
         for (Shape collapsedShape : treeLayoutCache.getCollapsedShapeMap().values()) {
             // Add the bounds of the branch path to the overall bounds
@@ -1896,13 +1918,13 @@ public class TreePane extends JComponent implements PainterListener, Printable {
 
         calloutPaths.clear();
         clearSelectionPaths();
-
+        
         calibrated = true;
     }
 
     private void calibrateTipLabels(final Graphics2D g2, final Node node, final double tipLabelHeight, final Rectangle2D totalTreeBounds) {
 
-        if (tree.isExternal(node) || node.getAttribute(COLLAPSE_ATTRIBUTE_NAME) != null) {
+        if (tree.isExternal(node) || (dependentTree != null && dependentTree.isExternal(node)) || node.getAttribute(COLLAPSE_ATTRIBUTE_NAME) != null) {
             tipLabelPainter.calibrate(g2, node);
             double width = tipLabelPainter.getPreferredWidth();
             tipLabelWidth = Math.max(tipLabelWidth, width);
@@ -2005,6 +2027,11 @@ public class TreePane extends JComponent implements PainterListener, Printable {
     private RootedTree tree = null;
     private TreeLayout treeLayout = null;
     private TreeLayoutCache treeLayoutCache = new TreeLayoutCache();
+    
+    private RootedTree originalDependentTree = null;
+    private RootedTree dependentTree = null;
+    private TreeLayout dependentTreeLayout = null;
+    private TreeLayoutCache dependentTreeLayoutCache = new TreeLayoutCache();  
 
     private boolean orderBranchesOn = false;
     private SortedRootedTree.BranchOrdering branchOrdering = SortedRootedTree.BranchOrdering.INCREASING_NODE_DENSITY;

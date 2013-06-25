@@ -16,7 +16,7 @@ public interface TreeLayout {
         DISCRETE
     }
 
-    void layout(RootedTree tree, TreeLayoutCache cache);
+    void layout(RootedTree tree, TreeLayoutCache ... caches);
 
     /**
      * Add a listener for this layout

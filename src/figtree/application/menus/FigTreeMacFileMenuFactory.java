@@ -51,6 +51,20 @@ public class FigTreeMacFileMenuFactory implements MenuFactory {
 		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, MenuBarFactory.MENU_MASK));
 		menu.add(item);
 
+		if (frame instanceof FigTreeFileMenuHandler) {
+		    Action action = ((FigTreeFileMenuHandler) frame).getOpenDependentTreeAction();
+		    if (action != null) {
+		        item = new JMenuItem(action);
+		        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MenuBarFactory.MENU_MASK));
+		        menu.add(item);
+		    } else {
+		        item = new JMenuItem("Open Dependent Trees...");
+		        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MenuBarFactory.MENU_MASK));
+		        item.setEnabled(false);
+		        menu.add(item);
+		    }
+		}
+		
 		if (application.getRecentFileMenu() != null) {
 			JMenu subMenu = application.getRecentFileMenu();
 			menu.add(subMenu);

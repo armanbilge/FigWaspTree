@@ -65,16 +65,32 @@ public class DefaultTreeViewer extends TreeViewer {
 
     public void setTree(Tree tree) {
         trees.clear();
+        dependentTrees.clear();
         addTree(tree);
         showTree(0);
+    }
+    
+    public void setDependentTree(Tree tree) {
+    	dependentTrees.clear();
+    	addDependentTree(tree);
+    	showDependentTree(getCurrentTreeIndex());
     }
 
     public void setTrees(Collection<? extends Tree> trees) {
         this.trees.clear();
+        this.dependentTrees.clear();
         for (Tree tree : trees) {
             addTree(tree);
         }
         showTree(0);
+    }
+    
+    public void setDependentTrees(Collection<? extends Tree> trees) {
+    	this.dependentTrees.clear();
+    	for (Tree tree : trees) {
+    		addDependentTree(tree);
+    	}
+    	showDependentTree(getCurrentTreeIndex());
     }
 
     public void addTree(Tree tree) {
@@ -100,6 +116,10 @@ public class DefaultTreeViewer extends TreeViewer {
 //            treePane.getLegendPainter().setupAttributes(trees);
 //        }
     }
+    
+    public void addDependentTree(Tree tree) {
+    	this.dependentTrees.add(tree);
+    }
 
     public void addTrees(Collection<? extends Tree> trees) {
         int count = getTreeCount();
@@ -109,6 +129,16 @@ public class DefaultTreeViewer extends TreeViewer {
         showTree(count);
     }
 
+    public void addDependentTrees(Collection<? extends Tree> trees) {
+
+    	for (Tree tree : trees) {
+            addDependentTree(tree);
+        }
+        if (currentTreeIndex < dependentTrees.size())
+        	showDependentTree(currentTreeIndex);
+
+    }
+    
     public List<Tree> getTrees() {
         return trees;
     }
@@ -157,16 +187,42 @@ public class DefaultTreeViewer extends TreeViewer {
         currentTreeIndex = index;
         fireTreeChanged();
     }
+    
+    public void showDependentTree(int index) {
+        if (isRootingOn() && getRootingType() == TreePane.RootingType.USER_ROOTING) {
+            JOptionPane.showMessageDialog(frame, "Cannot switch trees when user rooting option is on.\n" +
+                    "Turn this option off to switch trees",
+                    "Unable to switch trees",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Tree tree = dependentTrees.get(index);
+        if (tree instanceof RootedTree) {
+            treePane.setDependentTree((RootedTree)tree);
+        } else {
+            treePane.setDependentTree(Utils.rootTheTree(tree));
+        }
+
+        fireTreeChanged();
+
+    }
 
     public void showNextTree() {
         if (currentTreeIndex < trees.size() - 1) {
             showTree(currentTreeIndex + 1);
+            if (currentTreeIndex < dependentTrees.size()) {
+            	showDependentTree(currentTreeIndex);
+            }
         }
     }
 
     public void showPreviousTree() {
         if (currentTreeIndex > 0) {
             showTree(currentTreeIndex - 1);
+            if (currentTreeIndex < dependentTrees.size()) {
+            	showDependentTree(currentTreeIndex);
+            }
         }
     }
 
@@ -719,6 +775,7 @@ public class DefaultTreeViewer extends TreeViewer {
     private java.util.List<TreeViewerListener> listeners = new ArrayList<TreeViewerListener>();
 
     private List<Tree> trees = new ArrayList<Tree>();
+    private List<Tree> dependentTrees = new ArrayList<Tree>();
     private int currentTreeIndex = 0;
 
     protected TreePane treePane;

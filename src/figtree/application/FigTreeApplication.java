@@ -30,32 +30,50 @@
 
 package figtree.application;
 
-import figtree.application.preferences.*;
-import figtree.treeviewer.ExtendedTreeViewer;
-import jam.framework.*;
 import jam.controlpalettes.BasicControlPalette;
 import jam.controlpalettes.ControlPalette;
+import jam.framework.Application;
+import jam.framework.DocumentFrame;
+import jam.framework.DocumentFrameFactory;
+import jam.framework.MenuBarFactory;
+import jam.framework.MultiDocApplication;
 import jam.mac.Utils;
-import org.freehep.graphics2d.VectorGraphics;
-import org.freehep.graphicsio.ps.PSGraphics2D;
-import org.freehep.graphicsio.pdf.PDFGraphics2D;
-import org.freehep.graphicsio.emf.EMFGraphics2D;
-import org.freehep.graphicsio.svg.SVGGraphics2D;
-import org.freehep.graphicsio.gif.GIFGraphics2D;
-import org.freehep.graphicsio.swf.SWFGraphics2D;
 
-import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 
 import jebl.evolution.io.ImportException;
 import jebl.evolution.io.NewickImporter;
 import jebl.evolution.trees.Tree;
 
-import javax.swing.*;
+import org.freehep.graphics2d.VectorGraphics;
+import org.freehep.graphicsio.emf.EMFGraphics2D;
+import org.freehep.graphicsio.gif.GIFGraphics2D;
+import org.freehep.graphicsio.pdf.PDFGraphics2D;
+import org.freehep.graphicsio.ps.PSGraphics2D;
+import org.freehep.graphicsio.svg.SVGGraphics2D;
+import org.freehep.graphicsio.swf.SWFGraphics2D;
 
-import ch.randelshofer.quaqua.QuaquaManager;
+import figtree.application.preferences.AppearancePreferencesSection;
+import figtree.application.preferences.FontsPreferencesSection;
+import figtree.treeviewer.ExtendedTreeViewer;
 
 public class FigTreeApplication extends MultiDocApplication {
 

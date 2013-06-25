@@ -69,7 +69,8 @@ public class RadialTreeLayout extends AbstractTreeLayout {
         fireTreeLayoutChanged();
     }
 
-	public void layout(RootedTree tree, TreeLayoutCache cache) {
+	public void layout(RootedTree tree, TreeLayoutCache ...caches) {
+		TreeLayoutCache cache = caches[0];
         cache.clear();
 
         try {

@@ -109,8 +109,25 @@ public class TreeLayoutCache {
         nodeLabelPaths.clear();
         nodeShapePaths.clear();
         calloutPaths.clear();
-}
-
+        nodeIds.clear();
+        symbiontCounts.clear();
+	}
+	
+	public void combine(TreeLayoutCache tlc) {
+		nodePoints.putAll(tlc.nodePoints);
+		branchPaths.putAll(tlc.branchPaths);
+		nodeAreas.putAll(tlc.nodeAreas);
+		collapsedShapes.putAll(tlc.collapsedShapes);
+		hilightNodes.addAll(tlc.hilightNodes);
+		hilightShapes.putAll(tlc.hilightShapes);
+		tipLabelPaths.putAll(tlc.tipLabelPaths);
+		branchLabelPaths.putAll(tlc.branchLabelPaths);
+		nodeLabelPaths.putAll(tlc.nodeLabelPaths);
+		nodeShapePaths.putAll(tlc.nodeShapePaths);
+		calloutPaths.putAll(tlc.calloutPaths);
+		// Last two are not used for display
+	}
+	
     protected Map<Node, Point2D> nodePoints = new HashMap<Node, Point2D>();
     protected Map<Node, Shape> branchPaths = new HashMap<Node, Shape>();
     protected Map<Node, Shape> nodeAreas = new HashMap<Node, Shape>();
@@ -122,4 +139,6 @@ public class TreeLayoutCache {
     protected Map<Node, Line2D> nodeLabelPaths = new HashMap<Node, Line2D>();
     protected Map<Node, Line2D> nodeShapePaths = new HashMap<Node, Line2D>();
     protected Map<Node, Shape> calloutPaths = new HashMap<Node, Shape>();
+    protected Map<Integer, Node> nodeIds = new HashMap<Integer, Node>(); // Really should use an array but too lazy to initialize
+    protected Map<Node, Integer> symbiontCounts = new HashMap<Node, Integer>();
 }

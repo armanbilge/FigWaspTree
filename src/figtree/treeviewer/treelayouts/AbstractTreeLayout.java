@@ -3,6 +3,8 @@ package figtree.treeviewer.treelayouts;
 import java.util.HashSet;
 import java.util.Set;
 
+import jebl.evolution.trees.Tree;
+
 /**
  * @author Andrew Rambaut
  * @version $Id: AbstractTreeLayout.java 819 2007-10-22 14:42:58Z rambaut $

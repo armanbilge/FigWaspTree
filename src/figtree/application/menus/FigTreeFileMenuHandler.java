@@ -32,4 +32,6 @@ public interface FigTreeFileMenuHandler {
 	Action getExportGraphicAction();
 
     Action getExportPDFAction();
+    
+    Action getOpenDependentTreeAction();
 }

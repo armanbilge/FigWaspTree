@@ -136,8 +136,9 @@ public class PolarTreeLayout extends AbstractTreeLayout {
         return (branchColouringAttribute != null);
     }
 
-    public void layout(RootedTree tree, TreeLayoutCache cache) {
+    public void layout(RootedTree tree, TreeLayoutCache ...caches) {
 
+    	TreeLayoutCache cache = caches[0];
         cache.clear();
 
 

@@ -45,11 +45,11 @@ import jam.util.IconUtils;
 import figtree.application.menus.TreeMenuHandler;
 import figtree.application.menus.FigTreeFileMenuHandler;
 import figtree.treeviewer.*;
-import figtree.treeviewer.TreeSelectionListener;
 import figtree.treeviewer.annotations.*;
 import org.freehep.util.export.ExportDialog;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.datatransfer.*;
@@ -726,8 +726,13 @@ public class FigTreeFrame extends DocumentFrame implements FigTreeFileMenuHandle
 
             checkLabelAttribute(trees);
 
-            treeViewer.setTrees(trees);
-            controlPalette.setSettings(settings);
+            if (isReadingDependentTrees) {
+            	treeViewer.setDependentTrees(trees);
+            	isReadingDependentTrees = false;
+            } else {
+            	treeViewer.setTrees(trees);
+            	controlPalette.setSettings(settings);
+            }
         } catch (ImportException ie) {
             JOptionPane.showMessageDialog(this, "Error reading tree file: \n" + ie.getMessage(),
                     "Import Error",
@@ -1450,7 +1455,7 @@ public class FigTreeFrame extends DocumentFrame implements FigTreeFileMenuHandle
     public Action getFindAction() {
         return findAction;
     }
-
+    
     private AbstractAction importAction = new AbstractAction("Import Annotations...") {
         public void actionPerformed(ActionEvent ae) {
             doImport();
@@ -1639,4 +1644,38 @@ public class FigTreeFrame extends DocumentFrame implements FigTreeFileMenuHandle
     private AnnotationDialog annotationDialog = null;
     private AnnotationDialog copyAnnotationDialog = null;
     private SelectAnnotationDialog selectAnnotationDialog = null;
+
+    private boolean isReadingDependentTrees = false;
+    @SuppressWarnings("serial")
+	Action openDependentTreesAction = new AbstractAction("Open Dependent Trees...") {
+		@Override
+		public void actionPerformed(ActionEvent ae) {
+			FigTreeFrame.this.isReadingDependentTrees = true;
+		    FileDialog dialog = new FileDialog(FigTreeFrame.this,
+		                "Import Annotations File...",
+		                FileDialog.LOAD);
+
+		        dialog.setVisible(true);
+		        if (dialog.getFile() != null) {
+		            File file = new File(dialog.getDirectory(), dialog.getFile());
+
+		            try {
+		            	readFromFile(file);
+		            } catch (FileNotFoundException fnfe) {
+		                JOptionPane.showMessageDialog(FigTreeFrame.this, "Unable to open file: File not found",
+		                        "Unable to open file",
+		                        JOptionPane.ERROR_MESSAGE);
+		            } catch (IOException ioe) {
+		                JOptionPane.showMessageDialog(FigTreeFrame.this, "Unable to read file: " + ioe.getMessage(),
+		                        "Unable to read file",
+		                        JOptionPane.ERROR_MESSAGE);
+		            }
+		        }
+
+		    }	
+    };
+	@Override
+	public Action getOpenDependentTreeAction() {
+		return openDependentTreesAction;
+	}
 }
