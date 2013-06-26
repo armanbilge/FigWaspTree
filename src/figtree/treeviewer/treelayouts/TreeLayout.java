@@ -1,6 +1,8 @@
 package figtree.treeviewer.treelayouts;
 
+import jebl.evolution.graphs.Node;
 import jebl.evolution.trees.RootedTree;
+import jebl.evolution.trees.Tree;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -119,5 +121,30 @@ public interface TreeLayout {
     void setHilightAttributeName(String hilightAttributeName);
     
     public void layoutDependent(RootedTree tree, TreeLayoutCache cache);
+    
+    public static class Utils {
+    	public enum Relationship {
+    		SELF, SISTER, ANCESTOR, DESCENDANT, COUSIN;
+    	}
+    	public static Relationship determineRelationship(RootedTree tree, Node self, Node relation) {
+    		
+    		if (self.equals(relation)) return Relationship.SELF;
+    		if (!tree.isRoot(self) && !tree.isRoot(relation) && tree.getParent(self).equals(tree.getParent(relation))) return Relationship.SISTER;
+    		
+    		Node descendant = relation;
+    		do {
+    			descendant = tree.getParent(descendant);
+    			if (self.equals(descendant)) return Relationship.DESCENDANT;
+    		} while (descendant != null);
+    		
+    		descendant = self;
+    		do {
+    			descendant = tree.getParent(descendant);
+    			if (relation.equals(descendant)) return Relationship.ANCESTOR;
+    		} while (descendant != null);
+    		
+    		return Relationship.COUSIN;
+    	}
+    }
     
 }
