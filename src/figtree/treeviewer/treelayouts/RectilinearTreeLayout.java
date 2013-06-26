@@ -5,6 +5,8 @@ import jebl.evolution.trees.RootedTree;
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -131,7 +133,7 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
         Integer id = (Integer) root.getAttribute("nodeRef");
         if (id != null) {
         	cache.nodeIds.put(id, root);
-        	cache.symbiontCounts.put(root, 0);
+        	cache.symbionts.put(root, new ArrayList<Node>());
         }
         setRootLength(rootLengthProportion * tree.getHeight(root));
 
@@ -155,6 +157,7 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
 
         Point2D nodePoint;
 
+        
         if (!tree.isExternal(node)) {
 
             if (hilightAttributeName != null && node.getAttribute(hilightAttributeName) != null) {
@@ -321,7 +324,7 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
         Integer id = (Integer) node.getAttribute("nodeRef");
         if (id != null) {
         	cache.nodeIds.put(id, node);
-        	cache.symbiontCounts.put(node, 0);
+        	cache.symbionts.put(node, new ArrayList<Node>());
         }
 
         return nodePoint;
@@ -688,13 +691,32 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
 		        
 		    }
 
-		    private Point2D constructNode(final RootedTree tree, final Node node, final double xParent, final double xPosition, TreeLayoutCache cache, TreeLayoutCache hostCache) {
+		    private int getSymbiontCount(RootedTree tree, Node self, Node host, TreeLayoutCache hostCache) {
+		    	List<Node> symbionts = new ArrayList<Node>();
+		    	symbionts = hostCache.symbionts.get(host);
+		    	int count = 1;
+		    	boolean add = true;
+		    	for (int i = 0; i < symbionts.size(); i++) {
+		    		Node n = symbionts.get(i);
+		    		TreeLayout.Utils.Relationship relationship = TreeLayout.Utils.determineRelationship(tree, n, self);
+		    		if (relationship == TreeLayout.Utils.Relationship.DESCENDANT) {
+		    			symbionts.set(i, self);
+		    			add = false;
+		    		} else if (relationship != TreeLayout.Utils.Relationship.ANCESTOR) {
+		    			count++;
+		    		}
+		    	}
+		    	if (add) symbionts.add(self);
+		    	return count;
+		    }
+		    
+		    private Point2D constructNode(final RootedTree tree, final Node node, final double xParent, /*final*/ double xPosition, TreeLayoutCache cache, TreeLayoutCache hostCache) {
 
 	        	// Use the y-position of the host branch
 	        	final Node hostNode = hostCache.nodeIds.get((Integer) node.getAttribute("host.nodeRef"));
-	        	int symbiontCount = hostCache.symbiontCounts.get(hostNode) + 1;
-	        	hostCache.symbiontCounts.put(hostNode, symbiontCount);
+	        	int symbiontCount = getSymbiontCount(tree, node, hostNode, hostCache);
 	            final double yPos = hostCache.nodePoints.get(hostNode).getY() - symbiontCount * yIncrement;
+	            xPosition -= symbiontCount * yIncrement;
 		    	
 		        Point2D nodePoint;
 

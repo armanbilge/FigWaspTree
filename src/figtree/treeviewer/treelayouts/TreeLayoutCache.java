@@ -110,7 +110,7 @@ public class TreeLayoutCache {
         nodeShapePaths.clear();
         calloutPaths.clear();
         nodeIds.clear();
-        symbiontCounts.clear();
+        symbionts.clear();
 	}
 	
 	public void combine(TreeLayoutCache tlc) {
@@ -140,5 +140,5 @@ public class TreeLayoutCache {
     protected Map<Node, Line2D> nodeShapePaths = new HashMap<Node, Line2D>();
     protected Map<Node, Shape> calloutPaths = new HashMap<Node, Shape>();
     protected Map<Integer, Node> nodeIds = new HashMap<Integer, Node>(); // Really should use an array but too lazy to initialize
-    protected Map<Node, Integer> symbiontCounts = new HashMap<Node, Integer>();
+    protected Map<Node, List<Node>> symbionts = new HashMap<Node, List<Node>>();
 }
