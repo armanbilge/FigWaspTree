@@ -136,11 +136,9 @@ public class PolarTreeLayout extends AbstractTreeLayout {
         return (branchColouringAttribute != null);
     }
 
-    public void layout(RootedTree tree, TreeLayoutCache ...caches) {
+    public void layout(RootedTree tree, TreeLayoutCache cache) {
 
-    	TreeLayoutCache cache = caches[0];
         cache.clear();
-
 
         Node root = tree.getRootNode();
         double totalRootLength = (rootLengthProportion * tree.getHeight(root)) * 10.0;

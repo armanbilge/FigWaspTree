@@ -15,7 +15,7 @@ public interface TreeLayout {
         CONTINUOUS,
         DISCRETE
     }
-
+    
     void layout(RootedTree tree, TreeLayoutCache cache);
 
     /**
@@ -24,6 +24,8 @@ public interface TreeLayout {
      * @param listener
      */
     void addTreeLayoutListener(TreeLayoutListener listener);
+    
+    void createDependentLayout();
 
     /**
      * Remove a listener from this layout

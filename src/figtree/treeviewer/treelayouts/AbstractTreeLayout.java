@@ -1,7 +1,11 @@
 package figtree.treeviewer.treelayouts;
 
+import java.awt.Shape;
+import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Set;
+
+import figtree.treeviewer.treelayouts.TreeLayout.AxisType;
 
 import jebl.evolution.trees.RootedTree;
 import jebl.evolution.trees.Tree;
@@ -13,13 +17,7 @@ import jebl.evolution.trees.Tree;
 public abstract class AbstractTreeLayout implements TreeLayout {
 	private double rootLength = 0.0;
     private boolean isAxisReversed;
-
-    public AbstractTreeLayout() {
-    	addTreeLayoutListener(new TreeLayoutListener() {
-    		public void treeLayoutChanged() {dependentTreeLayout.fireTreeLayoutChanged();}
-    	});
-    }
-    
+   
     public boolean isAxisReversed() {
         return isAxisReversed;
     }
@@ -97,10 +95,14 @@ public abstract class AbstractTreeLayout implements TreeLayout {
 	}
 	
 	public void layoutDependent(RootedTree tree, TreeLayoutCache cache) {
+		if (dependentTreeLayout == null)
+			createDependentLayout();
 		dependentTreeLayout.layout(tree, cache);
 	}
 
-	protected final AbstractTreeLayout dependentTreeLayout = null;
+	public void createDependentLayout() {throw new UnsupportedOperationException();}
+	
+	protected AbstractTreeLayout dependentTreeLayout = null;
 	
     private Set<TreeLayoutListener> listeners = new HashSet<TreeLayoutListener>();
     protected String branchColouringAttribute = null;
