@@ -122,6 +122,9 @@ public interface TreeLayout {
     
     public void layoutDependent(RootedTree tree, TreeLayoutCache cache);
     
+    void setCladogram(boolean cladogram);
+    boolean isCladogram();
+    
     public static class Utils {
     	public enum Relationship {
     		SELF, SISTER, ANCESTOR, DESCENDANT, COUSIN;

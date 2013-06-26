@@ -435,6 +435,7 @@ public class TreePane extends JComponent implements PainterListener, Printable {
 
     public void setBranchTransform(TransformedRootedTree.Transform branchTransform) {
         this.branchTransform = branchTransform;
+        treeLayout.setCladogram(branchTransform == TransformedRootedTree.Transform.CLADOGRAM);
         setupTree();
     }
 

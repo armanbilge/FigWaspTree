@@ -100,6 +100,16 @@ public abstract class AbstractTreeLayout implements TreeLayout {
 		dependentTreeLayout.layout(tree, cache);
 	}
 
+	protected boolean cladogram = false;
+	public void setCladogram(boolean cladogram) {
+		this.cladogram = cladogram;
+		if (dependentTreeLayout != null)
+			dependentTreeLayout.setCladogram(cladogram);
+	}
+	public boolean isCladogram() {
+		return cladogram;
+	}
+	
 	public void createDependentLayout() {throw new UnsupportedOperationException();}
 	
 	protected AbstractTreeLayout dependentTreeLayout = null;

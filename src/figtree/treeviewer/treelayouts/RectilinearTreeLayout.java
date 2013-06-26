@@ -156,7 +156,6 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
     private Point2D constructNode(final RootedTree tree, final Node node, final double xParent, final double xPosition, TreeLayoutCache cache) {
 
         Point2D nodePoint;
-
         
         if (!tree.isExternal(node)) {
 
@@ -659,7 +658,8 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
 	public void createDependentLayout() {
 		super.dependentTreeLayout = new RectilinearTreeLayout() {
 	    	
-	    	private final double Y_INCREMENT_FACTOR = 4;
+	    	private final double INCREMENT_FACTOR = 4;
+	    	private double increment;
 	    	    	    	
 		    public void layout(RootedTree tree, TreeLayoutCache cache) {
 
@@ -668,7 +668,7 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
 		        maxXPosition = 0.0;
 
 		        tipCount = tree.getExternalNodes().size();
-		        yIncrement = (1.0 / ((cache.nodeIds.size() + 1) / 2)) / Y_INCREMENT_FACTOR; 
+		        increment = (1.0 / ((cache.nodeIds.size() + 1) / 2)) / INCREMENT_FACTOR; 
 
 		        Node root = tree.getRootNode();
 		        setRootLength(rootLengthProportion * tree.getHeight(root));
@@ -692,7 +692,7 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
 		    }
 
 		    private int getSymbiontCount(RootedTree tree, Node self, Node host, TreeLayoutCache hostCache) {
-		    	List<Node> symbionts = new ArrayList<Node>();
+		    	List<Node> symbionts;
 		    	symbionts = hostCache.symbionts.get(host);
 		    	int count = 1;
 		    	boolean add = true;
@@ -715,13 +715,15 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
 	        	// Use the y-position of the host branch
 	        	final Node hostNode = hostCache.nodeIds.get((Integer) node.getAttribute("host.nodeRef"));
 	        	int symbiontCount = getSymbiontCount(tree, node, hostNode, hostCache);
-	            final double yPos = hostCache.nodePoints.get(hostNode).getY() - symbiontCount * yIncrement;
-	            xPosition -= symbiontCount * yIncrement;
-		    	
+	            final double yPos = hostCache.nodePoints.get(hostNode).getY() - symbiontCount * increment;
+		    	if (cladogram) xPosition = hostCache.nodePoints.get(hostNode).getX();
+	            
 		        Point2D nodePoint;
 
 		        if (!tree.isExternal(node)) {
 
+		        	if (cladogram) xPosition -= symbiontCount * increment;
+		        	
 		            if (hilightAttributeName != null && node.getAttribute(hilightAttributeName) != null) {
 		                constructHilight(tree, node, xParent, xPosition, cache);
 		            }
