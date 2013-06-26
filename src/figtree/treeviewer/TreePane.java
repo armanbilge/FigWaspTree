@@ -81,6 +81,10 @@ public class TreePane extends JComponent implements PainterListener, Printable {
 
         recalculateCollapsedNodes();
 
+        if (originalDependentTree != null) {
+        	dependentTree = constructTransformedTree(originalDependentTree);
+        }
+        
         calibrated = false;
         invalidate();
         repaint();
@@ -89,6 +93,8 @@ public class TreePane extends JComponent implements PainterListener, Printable {
     private void setupDependentTree() {
     	dependentTree = constructTransformedTree(originalDependentTree);
     	calibrated = false;
+    	invalidate();
+    	repaint();
     }
 
     public RootedTree constructTransformedTree(RootedTree sourceTree) {

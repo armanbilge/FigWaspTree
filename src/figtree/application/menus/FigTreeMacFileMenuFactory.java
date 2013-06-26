@@ -53,7 +53,7 @@ public class FigTreeMacFileMenuFactory implements MenuFactory {
 
 		if (frame instanceof FigTreeFileMenuHandler) {
 		    Action action = ((FigTreeFileMenuHandler) frame).getOpenDependentTreeAction();
-		    if (action != null) {
+		    if (true) {
 		        item = new JMenuItem(action);
 		        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, MenuBarFactory.MENU_MASK));
 		        menu.add(item);

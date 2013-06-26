@@ -636,7 +636,7 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
             }
         }
     }
-
+    
     private double transformY(double y) {
         if (fishEye == 0.0) {
             return y;
@@ -670,7 +670,7 @@ public class RectilinearTreeLayout extends AbstractTreeLayout {
 		        Node root = tree.getRootNode();
 		        setRootLength(rootLengthProportion * tree.getHeight(root));
 
-		        maxXPosition = 0.0;
+		        maxXPosition = 0;
 		        getMaxXPosition(tree, root, getRootLength());
 
 		        Point2D rootPoint = constructNode(tree, root, 0.0, getRootLength(), myCache, cache);
