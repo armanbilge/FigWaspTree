@@ -6,9 +6,11 @@ import jebl.evolution.taxa.Taxon;
 import jebl.evolution.trees.*;
 import figtree.treeviewer.decorators.*;
 import figtree.treeviewer.painters.*;
+import figtree.treeviewer.painters.Painter;
 import figtree.treeviewer.treelayouts.*;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.print.*;

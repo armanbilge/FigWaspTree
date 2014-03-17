@@ -20,7 +20,6 @@
 
 package figtree.treeviewer.painters;
 
-import com.sun.tools.corba.se.idl.InterfaceEntry;
 import jebl.evolution.trees.Tree;
 import jebl.util.Attributable;
 
